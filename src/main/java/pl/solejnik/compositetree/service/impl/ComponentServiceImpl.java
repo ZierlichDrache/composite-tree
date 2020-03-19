@@ -61,10 +61,6 @@ public class ComponentServiceImpl implements ComponentService {
                 .findById(componentId)
                 .orElseThrow(() -> new ComponentNotFoundException(componentId));
 
-        if (found.isRoot()) {
-            throw new CannotRemoveRootException();
-        }
-
         if (found.isLeaf()) {
             updateLeafValue((Leaf) found, newValue);
         } else {
@@ -77,6 +73,11 @@ public class ComponentServiceImpl implements ComponentService {
         final Component found = componentRepository
                 .findById(componentId)
                 .orElseThrow(() -> new ComponentNotFoundException(componentId));
+
+        if (found.isRoot()) {
+            throw new CannotRemoveRootException();
+        }
+
         final Set<Long> componentsIds = StreamUtil
                 .flatten(found)
                 .map(Component::getId).collect(Collectors.toSet());
