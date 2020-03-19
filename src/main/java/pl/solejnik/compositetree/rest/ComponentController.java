@@ -18,25 +18,25 @@ public class ComponentController {
 
     @GetMapping("/root")
     public ResponseEntity<ComponentTO> getRootComponent() {
-        return new ResponseEntity<ComponentTO>(componentService.getRootComponent(), HttpStatus.OK);
+        return new ResponseEntity<>(componentService.getRootComponent(), HttpStatus.OK);
     }
 
     @PostMapping("/{id}/create-leaf")
     public ResponseEntity<ComponentTO> createLeafForComponentWithId(@PathVariable final Long id) {
-        componentService.addNewLeafToComponent(id);
-        return new ResponseEntity<ComponentTO>(HttpStatus.CREATED);
+        final ComponentTO updatedComponent = componentService.addNewLeafToComponent(id);
+        return new ResponseEntity<>(updatedComponent, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ComponentTO> updateComponentValue(@PathVariable final Long id,
                                                             @RequestParam final Long newValue) {
         componentService.updateComponentValue(id, newValue);
-        return new ResponseEntity<ComponentTO>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ComponentTO> deleteComponent(@PathVariable final Long id) {
         componentService.removeComponent(id);
-        return new ResponseEntity<ComponentTO>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

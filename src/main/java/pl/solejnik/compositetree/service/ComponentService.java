@@ -7,7 +7,7 @@ public interface ComponentService {
 
     ComponentTO getRootComponent();
 
-    void addNewLeafToComponent(Long compositeId);
+    ComponentTO addNewLeafToComponent(Long compositeId);
 
     void updateComponentValue(Long componentId, Long newValue);
 

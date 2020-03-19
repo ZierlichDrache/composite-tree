@@ -37,7 +37,7 @@ public class ComponentServiceImpl implements ComponentService {
     }
 
     @Override
-    public void addNewLeafToComponent(final Long compositeId) {
+    public ComponentTO addNewLeafToComponent(final Long compositeId) {
         final Component found = componentRepository
                 .findById(compositeId)
                 .orElseThrow(() -> new ComponentNotFoundException(compositeId));
@@ -58,7 +58,8 @@ public class ComponentServiceImpl implements ComponentService {
         source.addChild(newLeaf);
 
         newLeaf.calculateValueFromParents();
-        componentRepository.save(source);
+        Component savedComponent = componentRepository.save(source);
+        return ComponentMapper.map(savedComponent);
     }
 
     @Override
