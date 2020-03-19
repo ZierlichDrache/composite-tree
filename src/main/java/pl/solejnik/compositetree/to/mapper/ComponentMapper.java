@@ -17,6 +17,7 @@ public final class ComponentMapper {
         to.setId(component.getId());
         to.setValue(component.getValue());
         to.setChildOrder(component.getChildOrder());
+        to.setLeaf(component.isLeaf());
         if (!component.isLeaf()) {
             final List<ComponentTO> toChildren = ((Composite) component).getChildren()
                     .stream()
