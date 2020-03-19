@@ -15,7 +15,7 @@ public class ComponentParent {
         return id;
     }
 
-    public void setId(ComponentParentId id) {
+    public void setId(final ComponentParentId id) {
         this.id = id;
     }
 }

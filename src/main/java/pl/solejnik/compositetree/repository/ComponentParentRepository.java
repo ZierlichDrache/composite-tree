@@ -15,6 +15,6 @@ public interface ComponentParentRepository extends JpaRepository<ComponentParent
 
     @Transactional
     @Modifying
-    @Query("Delete from ComponentParent cp where cp.id.componentId in :ids or cp.id.parentId  in :ids")
-    void removeByComponentOrParentIds(Set<Long> ids);
+    @Query("Delete from ComponentParent cp where cp.id.componentId in :ids or cp.id.parentId  in :parentIds")
+    void deleteByComponentOrParentIds(final Set<Long> parentIds);
 }

@@ -18,18 +18,25 @@ public abstract class Component {
     @Column(name = "value")
     private Long value;
 
-    @ManyToMany
+    @Column(name = "child_order")
+    private Long childOrder;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "component_parent",
             joinColumns = @JoinColumn(name = "component_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "parent_id", referencedColumnName = "id"))
     private List<Composite> parents = new ArrayList<>();
 
-    public void addParent(Composite parent) {
+    public void addParent(final Composite parent) {
         this.parents.add(parent);
     }
 
-    public void removeParent(Composite parent) {
+    public void removeParent(final Composite parent) {
         this.parents.remove(parent);
+    }
+
+    public void removeAllParents() {
+        this.parents.clear();
     }
 
     public Long getId() {
@@ -42,6 +49,14 @@ public abstract class Component {
 
     public void setValue(Long value) {
         this.value = value;
+    }
+
+    public Long getChildOrder() {
+        return childOrder;
+    }
+
+    public void setChildOrder(Long childOrder) {
+        this.childOrder = childOrder;
     }
 
     public List<Composite> getParents() {

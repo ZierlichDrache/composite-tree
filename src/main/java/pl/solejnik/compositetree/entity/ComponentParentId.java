@@ -8,6 +8,7 @@ import java.util.Objects;
 
 @Embeddable
 public class ComponentParentId implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Column(name = "component_id")
     private Long componentId;
@@ -18,7 +19,7 @@ public class ComponentParentId implements Serializable {
     public ComponentParentId() {
     }
 
-    public ComponentParentId(Long componentId, Long parentId) {
+    public ComponentParentId(final Long componentId, final Long parentId) {
         this.componentId = componentId;
         this.parentId = parentId;
     }
@@ -32,7 +33,7 @@ public class ComponentParentId implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ComponentParentId that = (ComponentParentId) o;

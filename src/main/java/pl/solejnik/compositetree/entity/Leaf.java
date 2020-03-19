@@ -17,8 +17,13 @@ public class Leaf extends Component {
         return pathLength;
     }
 
-    public void setPathLength(Long pathLength) {
+    public void setPathLength(final Long pathLength) {
         this.pathLength = pathLength;
+    }
+
+    public void calculatePathLength() {
+        this.setPathLength(getParents().stream().map(Composite::getValue).reduce(0L, Long::sum));
+        this.setPathLength(getPathLength() + getValue());
     }
 
     @Override

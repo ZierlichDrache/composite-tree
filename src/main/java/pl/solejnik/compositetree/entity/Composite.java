@@ -1,9 +1,6 @@
 package pl.solejnik.compositetree.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,19 +8,28 @@ import java.util.List;
 @DiscriminatorValue("C")
 public class Composite extends Component {
 
-    @ManyToMany(mappedBy = "parents", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(mappedBy = "parents", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     private List<Component> children = new ArrayList<>();
 
-    public void addChild(Component newChild) {
+    public void addChild(final Component newChild) {
         getParents().forEach(newChild::addParent);
         newChild.addParent(this);
         this.children.add(newChild);
     }
 
-    public void removeChild(Component child) {
+    public void removeChild(final Component child) {
         getParents().forEach(child::removeParent);
         child.removeParent(this);
         this.children.remove(child);
+    }
+
+    public void removeAllChildren() {
+        this.children.clear();
+    }
+
+    public void removeRelations() {
+        removeAllChildren();
+        removeAllParents();
     }
 
     public List<Component> getChildren() {

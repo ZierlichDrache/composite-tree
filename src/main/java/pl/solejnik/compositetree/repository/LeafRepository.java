@@ -16,4 +16,9 @@ public interface LeafRepository extends JpaRepository<Leaf, Long> {
     @Modifying
     @Query("Delete from Leaf l where l.id in :ids")
     void removeByIds(Set<Long> ids);
+
+    @Transactional
+    @Modifying
+    @Query("Update Leaf l set l.pathLength = l.pathLength + :delta where l.id in :ids")
+    void updatePathsLengthsByIds(final Long delta, final Set<Long> ids);
 }

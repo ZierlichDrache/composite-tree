@@ -15,5 +15,5 @@ public interface ComponentRepository extends JpaRepository<Component, Long> {
     @Transactional
     @Modifying
     @Query("Delete from Component c where c.id in :ids")
-    void removeByIds(Set<Long> ids);
+    void deleteByIds(final Set<Long> ids);
 }
