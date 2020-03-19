@@ -32,7 +32,9 @@ public class ComponentServiceImpl implements ComponentService {
 
     @Override
     public ComponentTO getRootComponent() {
-        Component component = componentRepository.findById(1L).orElseThrow(() -> new ComponentNotFoundException(1L));
+        Component component = componentRepository
+                .findById(1L)
+                .orElseThrow(() -> new ComponentNotFoundException(1L));
         return ComponentMapper.map(component);
     }
 
