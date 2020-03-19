@@ -1,6 +1,7 @@
 package pl.solejnik.compositetree.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import pl.solejnik.compositetree.entity.Component;
 import pl.solejnik.compositetree.entity.Composite;
 import pl.solejnik.compositetree.entity.Leaf;
@@ -13,10 +14,7 @@ import pl.solejnik.compositetree.to.ComponentTO;
 import pl.solejnik.compositetree.to.mapper.ComponentMapper;
 import pl.solejnik.compositetree.util.StreamUtil;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,7 +59,6 @@ public class ComponentServiceImpl implements ComponentService {
 
         newLeaf.calculateValueFromParents();
         componentRepository.save(source);
-//        componentRepository.updateFirstParentById(newLeaf.getId(), source.getId());
     }
 
     @Override
@@ -121,7 +118,8 @@ public class ComponentServiceImpl implements ComponentService {
             found.removeAllParents();
 
             componentRepository.save(found);
-            componentRepository.deleteById(found.getId());
+            componentParentRepository.deleteByComponentOrParentIds(Collections.singleton(found.getId()));
+            componentRepository.deleteByIds(Collections.singleton(found.getId()));
             return newComposite;
         } else {
             return (Composite) found;
@@ -135,7 +133,7 @@ public class ComponentServiceImpl implements ComponentService {
             Leaf newLeaf = new Leaf();
             newLeaf.setValue(parentWithoutOtherChildren.getValue());
             newLeaf.setChildOrder(parentWithoutOtherChildren.getChildOrder());
-            newLeaf.setFirstParent(component.getFirstParent());
+            newLeaf.setFirstParent(parentWithoutOtherChildren.getFirstParent());
 
             parentWithoutOtherChildren.getParents().forEach(newLeaf::addParent);
 
