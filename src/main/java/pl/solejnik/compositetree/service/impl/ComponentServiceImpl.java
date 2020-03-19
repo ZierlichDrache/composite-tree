@@ -4,9 +4,11 @@ import org.springframework.stereotype.Service;
 import pl.solejnik.compositetree.entity.Component;
 import pl.solejnik.compositetree.entity.Composite;
 import pl.solejnik.compositetree.entity.Leaf;
+import pl.solejnik.compositetree.exception.CannotRemoveRootException;
+import pl.solejnik.compositetree.exception.ComponentNotFoundException;
 import pl.solejnik.compositetree.repository.ComponentParentRepository;
 import pl.solejnik.compositetree.repository.ComponentRepository;
-import pl.solejnik.compositetree.service.CompositeService;
+import pl.solejnik.compositetree.service.ComponentService;
 import pl.solejnik.compositetree.util.StreamUtil;
 
 import java.util.Comparator;
@@ -16,13 +18,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class CompositeServiceImpl implements CompositeService {
+public class ComponentServiceImpl implements ComponentService {
 
     private ComponentRepository componentRepository;
 
     private ComponentParentRepository componentParentRepository;
 
-    public CompositeServiceImpl(final ComponentRepository componentRepository,
+    public ComponentServiceImpl(final ComponentRepository componentRepository,
                                 final ComponentParentRepository componentParentRepository) {
         this.componentRepository = componentRepository;
         this.componentParentRepository = componentParentRepository;
@@ -30,7 +32,9 @@ public class CompositeServiceImpl implements CompositeService {
 
     @Override
     public Component addNewLeafToComponent(final Long compositeId) {
-        final Component found = componentRepository.findById(compositeId).get();
+        final Component found = componentRepository
+                .findById(compositeId)
+                .orElseThrow(() -> new ComponentNotFoundException(compositeId));
 
         final Composite source = updateLeaf(found);
 
@@ -53,7 +57,13 @@ public class CompositeServiceImpl implements CompositeService {
 
     @Override
     public void updateComponentValue(final Long componentId, final Long newValue) {
-        final Component found = componentRepository.findById(componentId).get();
+        final Component found = componentRepository
+                .findById(componentId)
+                .orElseThrow(() -> new ComponentNotFoundException(componentId));
+
+        if (found.isRoot()) {
+            throw new CannotRemoveRootException();
+        }
 
         if (found.isLeaf()) {
             updateLeafValue((Leaf) found, newValue);
@@ -63,8 +73,10 @@ public class CompositeServiceImpl implements CompositeService {
     }
 
     @Override
-    public void removeComponent(final Long id) {
-        final Component found = componentRepository.findById(id).get();
+    public void removeComponent(final Long componentId) {
+        final Component found = componentRepository
+                .findById(componentId)
+                .orElseThrow(() -> new ComponentNotFoundException(componentId));
         final Set<Long> componentsIds = StreamUtil
                 .flatten(found)
                 .map(Component::getId).collect(Collectors.toSet());

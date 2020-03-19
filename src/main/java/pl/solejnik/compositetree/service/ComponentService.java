@@ -2,7 +2,7 @@ package pl.solejnik.compositetree.service;
 
 import pl.solejnik.compositetree.entity.Component;
 
-public interface CompositeService {
+public interface ComponentService {
 
     Component addNewLeafToComponent(Long compositeId);
 
