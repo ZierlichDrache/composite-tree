@@ -6,12 +6,12 @@ import pl.solejnik.compositetree.entity.Composite;
 import pl.solejnik.compositetree.entity.Leaf;
 import pl.solejnik.compositetree.repository.ComponentParentRepository;
 import pl.solejnik.compositetree.repository.ComponentRepository;
-import pl.solejnik.compositetree.repository.LeafRepository;
 import pl.solejnik.compositetree.service.CompositeService;
 import pl.solejnik.compositetree.util.StreamUtil;
 
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,15 +20,11 @@ public class CompositeServiceImpl implements CompositeService {
 
     private ComponentRepository componentRepository;
 
-    private LeafRepository leafRepository;
-
     private ComponentParentRepository componentParentRepository;
 
     public CompositeServiceImpl(final ComponentRepository componentRepository,
-                                final LeafRepository leafRepository,
                                 final ComponentParentRepository componentParentRepository) {
         this.componentRepository = componentRepository;
-        this.leafRepository = leafRepository;
         this.componentParentRepository = componentParentRepository;
     }
 
@@ -50,7 +46,7 @@ public class CompositeServiceImpl implements CompositeService {
 
         source.addChild(newLeaf);
 
-        newLeaf.calculatePathLength();
+        newLeaf.calculateValueFromParents();
 
         return componentRepository.save(source);
     }
@@ -59,49 +55,35 @@ public class CompositeServiceImpl implements CompositeService {
     public void updateComponentValue(final Long componentId, final Long newValue) {
         final Component found = componentRepository.findById(componentId).get();
 
-        final long delta = newValue - found.getValue();
-
-        found.setValue(newValue);
-
-        componentRepository.save(found);
-
-        adjustLeafsPathLength(found, delta);
+        if (found.isLeaf()) {
+            updateLeafValue((Leaf) found, newValue);
+        } else {
+            updateCompositeValue((Composite) found, newValue);
+        }
     }
 
     @Override
     public void removeComponent(final Long id) {
         final Component found = componentRepository.findById(id).get();
-        final Set<Component> children = StreamUtil
+        final Set<Long> componentsIds = StreamUtil
                 .flatten(found)
-                .collect(Collectors.toSet());
-
-        final Set<Long> componentsIds = new HashSet<>();
-        final Set<Long> leafsIds = new HashSet<>();
-
-        for (Component child : children) {
-            componentsIds.add(child.getId());
-            if (child.isLeaf()) {
-                leafsIds.add(child.getId());
-            }
-        }
-
+                .map(Component::getId).collect(Collectors.toSet());
 
         updateParentWithoutOtherChildren(found, componentsIds);
 
         componentParentRepository.deleteByComponentOrParentIds(componentsIds);
-        leafRepository.removeByIds(leafsIds);
         componentRepository.deleteByIds(componentsIds);
     }
 
 
-    private void adjustLeafsPathLength(final Component component, final long delta) {
-        if (delta > 0) {
+    private void adjustLeafsValues(final Component component, final long delta) {
+        if (delta != 0) {
             final Set<Long> collect = StreamUtil
                     .flatten(component)
                     .filter(Component::isLeaf)
                     .map(Component::getId)
                     .collect(Collectors.toSet());
-            leafRepository.updatePathsLengthsByIds(delta, collect);
+            componentRepository.updateValuesByDeltaAndIds(delta, collect);
         }
     }
 
@@ -114,9 +96,8 @@ public class CompositeServiceImpl implements CompositeService {
             found.getParents().forEach(newComposite::addParent);
             found.removeAllParents();
 
-            componentRepository.delete(found);
-            leafRepository.deleteById(found.getId());
-
+            componentRepository.save(found);
+            componentRepository.deleteById(found.getId());
             return newComposite;
         } else {
             return (Composite) found;
@@ -135,8 +116,6 @@ public class CompositeServiceImpl implements CompositeService {
 
             parentWithoutOtherChildren.removeRelations();
 
-            newLeaf.calculatePathLength();
-
             componentsIds.add(parentWithoutOtherChildren.getId());
 
             componentRepository.save(newLeaf);
@@ -145,14 +124,45 @@ public class CompositeServiceImpl implements CompositeService {
 
     private Composite findParentWithoutOtherChildren(final Component component) {
         for (final Composite parent : component.getParents()) {
-            long otherChildrenAmount = parent.getChildren()
-                    .stream()
-                    .filter(c -> !c.getId().equals(component.getId()))
-                    .count();
-            if (otherChildrenAmount == 0) {
-                return parent;
+            if (!parent.isRoot()) {
+                long otherChildrenAmount = parent.getChildren()
+                        .stream()
+                        .filter(c -> !c.getId().equals(component.getId()))
+                        .count();
+                if (otherChildrenAmount == 0) {
+                    return parent;
+                }
             }
         }
         return null;
+    }
+
+    private void updateCompositeValue(final Composite composite, Long newValue) {
+        final long delta = newValue - composite.getValue();
+
+        composite.setValue(newValue);
+
+        componentRepository.save(composite);
+
+        adjustLeafsValues(composite, delta);
+    }
+
+    private void updateLeafValue(final Leaf leaf, final Long newValue) {
+        long remainingDelta = newValue - leaf.getValue();
+
+        if (remainingDelta > 0) {
+            updateComponentValue(leaf.getParents().get(0).getId(), remainingDelta);
+        } else {
+            final Map<Composite, Long> parentsToUpdate = new HashMap<>();
+            for (Composite parent : leaf.getParents()) {
+                remainingDelta = remainingDelta + parent.getValue();
+                parentsToUpdate.put(parent, Math.max(0L, remainingDelta));
+                if (remainingDelta >= 0) {
+                    break;
+                }
+            }
+
+            parentsToUpdate.forEach((k, v) -> updateComponentValue(k.getId(), v));
+        }
     }
 }

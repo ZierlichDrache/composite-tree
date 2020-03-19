@@ -63,6 +63,10 @@ public abstract class Component {
         return parents;
     }
 
+    public boolean isRoot() {
+        return this.id != null && this.id == 1L;
+    }
+
     public abstract boolean isLeaf();
 }
 

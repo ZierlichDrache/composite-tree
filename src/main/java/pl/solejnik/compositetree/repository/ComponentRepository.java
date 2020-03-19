@@ -16,4 +16,9 @@ public interface ComponentRepository extends JpaRepository<Component, Long> {
     @Modifying
     @Query("Delete from Component c where c.id in :ids")
     void deleteByIds(final Set<Long> ids);
+
+    @Transactional
+    @Modifying
+    @Query("Update Component c set c.value = c.value + (:delta) where c.id in :ids")
+    void updateValuesByDeltaAndIds(final Long delta, final Set<Long> ids);
 }
