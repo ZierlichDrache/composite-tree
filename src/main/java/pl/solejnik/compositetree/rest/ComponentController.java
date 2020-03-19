@@ -7,6 +7,7 @@ import pl.solejnik.compositetree.service.ComponentService;
 import pl.solejnik.compositetree.to.ComponentTO;
 
 @RestController
+@RequestMapping("/component")
 public class ComponentController {
 
     private ComponentService componentService;
@@ -15,25 +16,26 @@ public class ComponentController {
         this.componentService = componentService;
     }
 
-    @GetMapping("/component/root")
+    @GetMapping("/root")
     public ResponseEntity<ComponentTO> getRootComponent() {
         return new ResponseEntity<ComponentTO>(componentService.getRootComponent(), HttpStatus.OK);
     }
 
-    @PostMapping("/component/create-leaf")
-    public ResponseEntity<ComponentTO> createLeafForComponentWithId(@RequestParam Long id) {
+    @PostMapping("/{id}/create-leaf")
+    public ResponseEntity<ComponentTO> createLeafForComponentWithId(@PathVariable final Long id) {
         componentService.addNewLeafToComponent(id);
         return new ResponseEntity<ComponentTO>(HttpStatus.CREATED);
     }
 
-    @PutMapping("/component/update")
-    public ResponseEntity<ComponentTO> updateComponentValue(@RequestParam final Long id, @RequestParam final Long newValue) {
+    @PutMapping("/{id}")
+    public ResponseEntity<ComponentTO> updateComponentValue(@PathVariable final Long id,
+                                                            @RequestParam final Long newValue) {
         componentService.updateComponentValue(id, newValue);
         return new ResponseEntity<ComponentTO>(HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/component/delete")
-    public ResponseEntity<ComponentTO> deleteComponent(@RequestParam final Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ComponentTO> deleteComponent(@PathVariable final Long id) {
         componentService.removeComponent(id);
         return new ResponseEntity<ComponentTO>(HttpStatus.NO_CONTENT);
     }
