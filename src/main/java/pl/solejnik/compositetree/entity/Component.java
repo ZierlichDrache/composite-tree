@@ -21,6 +21,10 @@ public abstract class Component {
     @Column(name = "child_order")
     private Long childOrder;
 
+    @OneToOne
+    @JoinColumn(name = "first_parent")
+    private Composite firstParent;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "component_parent",
             joinColumns = @JoinColumn(name = "component_id", referencedColumnName = "id"),
@@ -55,8 +59,16 @@ public abstract class Component {
         return childOrder;
     }
 
-    public void setChildOrder(Long childOrder) {
+    public void setChildOrder(final Long childOrder) {
         this.childOrder = childOrder;
+    }
+
+    public Composite getFirstParent() {
+        return firstParent;
+    }
+
+    public void setFirstParent(final Composite firstParent) {
+        this.firstParent = firstParent;
     }
 
     public List<Composite> getParents() {

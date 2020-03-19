@@ -9,6 +9,8 @@ import pl.solejnik.compositetree.exception.ComponentNotFoundException;
 import pl.solejnik.compositetree.repository.ComponentParentRepository;
 import pl.solejnik.compositetree.repository.ComponentRepository;
 import pl.solejnik.compositetree.service.ComponentService;
+import pl.solejnik.compositetree.to.ComponentTO;
+import pl.solejnik.compositetree.to.mapper.ComponentMapper;
 import pl.solejnik.compositetree.util.StreamUtil;
 
 import java.util.Comparator;
@@ -31,7 +33,13 @@ public class ComponentServiceImpl implements ComponentService {
     }
 
     @Override
-    public Component addNewLeafToComponent(final Long compositeId) {
+    public ComponentTO getRootComponent() {
+        Component component = componentRepository.findById(1L).orElseThrow(() -> new ComponentNotFoundException(1L));
+        return ComponentMapper.map(component);
+    }
+
+    @Override
+    public void addNewLeafToComponent(final Long compositeId) {
         final Component found = componentRepository
                 .findById(compositeId)
                 .orElseThrow(() -> new ComponentNotFoundException(compositeId));
@@ -40,6 +48,7 @@ public class ComponentServiceImpl implements ComponentService {
 
         final Leaf newLeaf = new Leaf();
         newLeaf.setValue(0L);
+        newLeaf.setFirstParent(source);
 
         final long newChildOrder = source.getChildren()
                 .stream()
@@ -51,8 +60,8 @@ public class ComponentServiceImpl implements ComponentService {
         source.addChild(newLeaf);
 
         newLeaf.calculateValueFromParents();
-
-        return componentRepository.save(source);
+        componentRepository.save(source);
+//        componentRepository.updateFirstParentById(newLeaf.getId(), source.getId());
     }
 
     @Override
@@ -85,6 +94,7 @@ public class ComponentServiceImpl implements ComponentService {
         updateParentWithoutOtherChildren(found, componentsIds);
 
         componentParentRepository.deleteByComponentOrParentIds(componentsIds);
+        componentRepository.removeFirstParentsByIds(componentsIds);
         componentRepository.deleteByIds(componentsIds);
     }
 
@@ -105,6 +115,7 @@ public class ComponentServiceImpl implements ComponentService {
             final Composite newComposite = new Composite();
             newComposite.setChildOrder(found.getChildOrder());
             newComposite.setValue(found.getValue());
+            newComposite.setFirstParent(found.getFirstParent());
 
             found.getParents().forEach(newComposite::addParent);
             found.removeAllParents();
@@ -124,6 +135,7 @@ public class ComponentServiceImpl implements ComponentService {
             Leaf newLeaf = new Leaf();
             newLeaf.setValue(parentWithoutOtherChildren.getValue());
             newLeaf.setChildOrder(parentWithoutOtherChildren.getChildOrder());
+            newLeaf.setFirstParent(component.getFirstParent());
 
             parentWithoutOtherChildren.getParents().forEach(newLeaf::addParent);
 
