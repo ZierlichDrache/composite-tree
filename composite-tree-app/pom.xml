@@ -10,7 +10,7 @@
   <artifactId>composite-tree-app</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>composite-tree-app</name>
+  <packaging>jar</packaging>
 
   <build>
     <plugins>
