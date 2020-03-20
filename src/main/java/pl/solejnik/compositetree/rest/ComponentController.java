@@ -16,12 +16,12 @@ public class ComponentController {
         this.componentService = componentService;
     }
 
-    @GetMapping("/root")
+    @GetMapping(value = "/root", produces = "application/json")
     public ResponseEntity<ComponentTO> getRootComponent() {
         return new ResponseEntity<>(componentService.getRootComponent(), HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/create-leaf")
+    @PostMapping(value = "/{id}/create-leaf", produces = "application/json")
     public ResponseEntity<ComponentTO> createLeafForComponentWithId(@PathVariable final Long id) {
         final ComponentTO updatedComponent = componentService.addNewLeafToComponent(id);
         return new ResponseEntity<>(updatedComponent, HttpStatus.CREATED);
