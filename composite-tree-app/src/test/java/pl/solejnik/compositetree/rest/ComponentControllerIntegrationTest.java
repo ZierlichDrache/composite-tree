@@ -9,6 +9,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.jdbc.Sql;
 import pl.solejnik.compositetree.to.ComponentTO;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql(scripts = "cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class ComponentControllerIntegrationTest {
 
     private final static String LOCALHOST = "http://localhost:";
@@ -56,6 +58,7 @@ public class ComponentControllerIntegrationTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
+
     @Test
     public void should_updateComponentValueForExistingComponent() {
 
@@ -65,6 +68,7 @@ public class ComponentControllerIntegrationTest {
         // then
         // nothing
     }
+
 
     @Test
     public void should_deleteComponentForExistingComponentIsCalled() {
@@ -78,4 +82,5 @@ public class ComponentControllerIntegrationTest {
         // then
         // nothing
     }
+
 }

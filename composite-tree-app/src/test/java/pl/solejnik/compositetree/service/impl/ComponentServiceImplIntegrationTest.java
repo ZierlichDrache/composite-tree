@@ -5,23 +5,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.jdbc.Sql;
 import pl.solejnik.compositetree.to.ComponentTO;
-
-import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-@Transactional
+@Sql(scripts = "cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class ComponentServiceImplIntegrationTest {
 
     @Autowired
     private ComponentServiceImpl service;
 
     @Test
-    @Rollback
     public void should_addTwoLeafsToComponent() {
 
         // given
@@ -37,7 +34,6 @@ public class ComponentServiceImplIntegrationTest {
     }
 
     @Test
-    @Rollback
     public void should_updateRootsValueAfterUpdateLeafsValue() {
 
         // given
