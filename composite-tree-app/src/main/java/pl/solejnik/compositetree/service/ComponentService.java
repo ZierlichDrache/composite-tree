@@ -1,6 +1,5 @@
 package pl.solejnik.compositetree.service;
 
-import pl.solejnik.compositetree.entity.Component;
 import pl.solejnik.compositetree.to.ComponentTO;
 
 public interface ComponentService {

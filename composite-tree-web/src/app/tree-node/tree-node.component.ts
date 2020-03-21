@@ -10,16 +10,16 @@ import { FormControl } from '@angular/forms';
 export class TreeNodeComponent implements OnInit {
 
   @Input()
-  treeNodeValue = 0;
+  treeNodeValue: number;
 
   @Output()
-  addNewLeafEvent: EventEmitter<any> = new EventEmitter();
+  addNewNodeEvent: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  removeComponentEvent: EventEmitter<any> = new EventEmitter();
+  removeNodeEvent: EventEmitter<any> = new EventEmitter();
 
   @Output()
-  updateValueEvent: EventEmitter<number> = new EventEmitter();
+  updateNodeValueEvent: EventEmitter<number> = new EventEmitter();
 
   newValue: FormControl;
 
@@ -31,12 +31,12 @@ export class TreeNodeComponent implements OnInit {
     this.newValue = new FormControl(this.treeNodeValue);
   }
 
-  addNewLeaf() {
-    this.addNewLeafEvent.emit();
+  addNewNode() {
+    this.addNewNodeEvent.emit();
   }
 
-  removeComponent() {
-    this.removeComponentEvent.emit();
+  removeThisNode() {
+    this.removeNodeEvent.emit();
   }
 
   showOptions(): void {
@@ -61,6 +61,6 @@ export class TreeNodeComponent implements OnInit {
       this.treeNodeValue = this.newValue.value;
     }
     this.edit = false;
-    this.updateValueEvent.emit(this.treeNodeValue);
+    this.updateNodeValueEvent.emit(this.treeNodeValue);
   }
 }

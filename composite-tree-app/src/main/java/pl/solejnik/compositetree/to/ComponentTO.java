@@ -10,8 +10,6 @@ public class ComponentTO implements Serializable {
 
     private Long value;
 
-    private Long childOrder;
-
     private List<ComponentTO> children;
 
     private boolean isLeaf;
@@ -30,14 +28,6 @@ public class ComponentTO implements Serializable {
 
     public void setValue(Long value) {
         this.value = value;
-    }
-
-    public Long getChildOrder() {
-        return childOrder;
-    }
-
-    public void setChildOrder(Long childOrder) {
-        this.childOrder = childOrder;
     }
 
     public List<ComponentTO> getChildren() {

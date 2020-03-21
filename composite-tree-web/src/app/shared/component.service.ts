@@ -1,7 +1,7 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ComponentNode } from './component-node';
+import { ComponentNode } from './dtos';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,15 @@ export class ComponentService {
   }
 
   deleteComponent(id: number): Observable<any> {
-    return  this.http.delete('/component/' + id);
+    return  this.http.delete(`/component/${id}`);
+  }
+
+  addNewLeafToComponent(id: number): Observable<ComponentNode> {
+    return this.http.post<ComponentNode>(`/component/${id}/create-leaf` , null);
+  }
+
+  updateCompnentValue(id: number, newValue: number): Observable<any> {
+    const params = new HttpParams().set('newValue', newValue + '');
+    return this.http.put(`/component/${id}`, params);
   }
 }

@@ -1,27 +1,74 @@
 
-<span *ngIf="!edit">{{treeNodeValue}}</span>
+<span *ngIf="!edit">
+  {{treeNodeValue}}
+</span>
 <mat-form-field *ngIf="edit">
-  <input matInput [value]="treeNodeValue" [formControl]="newValue">
+  <input
+    matInput
+    [value]="treeNodeValue"
+    [formControl]="newValue"
+  >
 </mat-form-field>
 
-<button mat-icon-button *ngIf="!optionsVisible" (click)="showOptions()" >
-  <mat-icon>arrow_forward</mat-icon>
+<button
+  *ngIf="!optionsVisible"
+  mat-icon-button
+  (click)="showOptions()"
+>
+  <mat-icon>
+    arrow_forward
+  </mat-icon>
 </button>
-<button mat-icon-button *ngIf="optionsVisible" (click)="hideOptions()">
-  <mat-icon>arrow_back</mat-icon>
+<button
+  *ngIf="optionsVisible"
+  mat-icon-button
+  (click)="hideOptions()"
+>
+  <mat-icon>
+    arrow_back
+  </mat-icon>
 </button>
-<button mat-icon-button *ngIf="optionsVisible  && !edit" (click)="addNewLeaf()">
-  <mat-icon>add</mat-icon>
+<button
+  *ngIf="optionsVisible  && !edit"
+  mat-icon-button
+  (click)="addNewNode()"
+>
+  <mat-icon>
+    add
+  </mat-icon>
 </button>
-<button mat-icon-button *ngIf="optionsVisible && !edit" >
-  <mat-icon>delete</mat-icon>
+<button
+  *ngIf="optionsVisible && !edit"
+  mat-icon-button
+  (click)="removeThisNode()"
+>
+  <mat-icon>
+    delete
+  </mat-icon>
 </button>
-<button mat-icon-button *ngIf="optionsVisible && !edit" (click)="performEdit()">
-  <mat-icon>edit</mat-icon>
+<button
+  *ngIf="optionsVisible && !edit"
+  mat-icon-button
+  (click)="performEdit()">
+  <mat-icon>
+    edit
+  </mat-icon>
 </button>
-<button mat-icon-button *ngIf="edit" (click)="acceptEditWithNewValue()" >
-  <mat-icon>done</mat-icon>
+<button
+  *ngIf="edit"
+  mat-icon-button
+  (click)="acceptEditWithNewValue()"
+>
+  <mat-icon>
+    done
+  </mat-icon>
 </button>
-<button mat-icon-button *ngIf="edit" (click)="cancelEdit()" >
-  <mat-icon>cancel</mat-icon>
+<button
+  *ngIf="edit"
+  mat-icon-button
+  (click)="cancelEdit()"
+>
+  <mat-icon>
+    cancel
+  </mat-icon>
 </button>
