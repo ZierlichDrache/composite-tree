@@ -40,4 +40,10 @@ public class ComponentController {
         componentService.removeComponent(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PutMapping("/root")
+    public ResponseEntity<ComponentTO> updateRootComponent(@RequestBody final ComponentTO newTO) {
+        ComponentTO updatedTO = componentService.updateRootComponent(newTO);
+        return new ResponseEntity<>(updatedTO, HttpStatus.OK);
+    }
 }

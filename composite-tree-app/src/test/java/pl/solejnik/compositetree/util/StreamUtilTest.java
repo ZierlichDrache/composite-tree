@@ -6,6 +6,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.solejnik.compositetree.entity.Component;
 import pl.solejnik.compositetree.entity.Composite;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,9 +23,9 @@ public class StreamUtilTest {
         c1.addChild(c2);
 
         // when
-        Stream<Component> flatten = StreamUtil.flatten(c1);
+        Set<Component> flatten = StreamUtil.flatComponent(c1);
 
         // then
-        assertEquals(2, flatten.count());
+        assertEquals(2, flatten.size());
     }
 }

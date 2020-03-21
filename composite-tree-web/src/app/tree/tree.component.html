@@ -1,5 +1,21 @@
-<button mat-button (click)="treeControl.expandAll()">Expand all</button>
-<button mat-button (click)="treeControl.collapseAll()">Collapse all</button>
+<button
+  mat-stroked-button
+  (click)="treeControl.expandAll()"
+>
+  Expand all
+</button>
+<button
+  mat-stroked-button
+  (click)="treeControl.collapseAll()"
+>
+  Collapse all
+</button>
+<button
+  mat-stroked-button
+  (click)="saveRootComponentNode()"
+>
+  Save all
+</button>
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
   <!-- This is the tree node template for leaf nodes -->
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>

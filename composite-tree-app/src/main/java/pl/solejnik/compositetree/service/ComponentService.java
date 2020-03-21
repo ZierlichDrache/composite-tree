@@ -11,4 +11,6 @@ public interface ComponentService {
     void updateComponentValue(Long componentId, Long newValue);
 
     void removeComponent(Long id);
+
+    ComponentTO updateRootComponent(ComponentTO newTO);
 }

@@ -59,7 +59,7 @@ public class ComponentServiceImpl implements ComponentService {
         source.addChild(newLeaf);
 
         newLeaf.calculateValueFromParents();
-        Component savedComponent = componentRepository.save(source);
+        final Component savedComponent = componentRepository.save(source);
         return ComponentMapper.map(savedComponent);
     }
 
@@ -87,7 +87,8 @@ public class ComponentServiceImpl implements ComponentService {
         }
 
         final Set<Long> componentsIds = StreamUtil
-                .flatten(found)
+                .flatComponent(found)
+                .stream()
                 .map(Component::getId).collect(Collectors.toSet());
 
         updateParentWithoutOtherChildren(found, componentsIds);
@@ -97,11 +98,38 @@ public class ComponentServiceImpl implements ComponentService {
         componentRepository.deleteByIds(componentsIds);
     }
 
+    @Override
+    public ComponentTO updateRootComponent(final ComponentTO newRootTO) {
+        final Component oldRoot = componentRepository
+                .findById(newRootTO.getId())
+                .orElseThrow(() -> new ComponentNotFoundException(newRootTO.getId()));
+
+        final List<Component> components = StreamUtil.sortedFlatComponent(oldRoot);
+        final List<ComponentTO> tos = StreamUtil.sortedFlatComponentTO(newRootTO);
+
+        if (components.size() != tos.size()) {
+            throw new IllegalArgumentException();
+        }
+
+        for (int i = 0; i < components.size(); i++) {
+            final Component component = components.get(i);
+            final ComponentTO componentTO = tos.get(i);
+            if (!component.getId().equals(componentTO.getId())) {
+                throw new IllegalArgumentException();
+            }
+            component.setValue(componentTO.getValue());
+        }
+
+        final Component newRoot = componentRepository.save(oldRoot);
+        return ComponentMapper.map(newRoot);
+    }
+
 
     private void adjustLeafsValues(final Component component, final long delta) {
         if (delta != 0) {
             final Set<Long> collect = StreamUtil
-                    .flatten(component)
+                    .flatComponent(component)
+                    .stream()
                     .filter(Component::isLeaf)
                     .map(Component::getId)
                     .collect(Collectors.toSet());
@@ -181,7 +209,6 @@ public class ComponentServiceImpl implements ComponentService {
                     break;
                 }
             }
-
             parentsToUpdate.forEach((k, v) -> updateComponentValue(k.getId(), v));
         }
     }

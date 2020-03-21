@@ -26,4 +26,8 @@ export class ComponentService {
     const params = new HttpParams().set('newValue', newValue + '');
     return this.http.put(`/component/${id}`, params);
   }
+
+  updateRootComponent(rootComponent: ComponentNode): Observable<ComponentNode> {
+    return this.http.put<ComponentNode>('/component/root', rootComponent);
+  }
 }

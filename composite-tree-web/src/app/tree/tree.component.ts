@@ -42,6 +42,10 @@ export class TreeComponent implements OnInit {
     this.service.getRootComponent().subscribe(this.getRootComponentNodeObserver);
   }
 
+  saveRootComponentNode() {
+    this.service.updateRootComponent(this.data).subscribe(this.getRootComponentNodeObserver);
+  }
+
   onAddNewNodeEvent(id: number) {
     this.service.addNewLeafToComponent(id).subscribe({
       next: value => {
