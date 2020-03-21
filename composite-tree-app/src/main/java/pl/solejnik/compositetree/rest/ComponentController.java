@@ -8,6 +8,7 @@ import pl.solejnik.compositetree.to.ComponentTO;
 
 @RestController
 @RequestMapping("/component")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ComponentController {
 
     private ComponentService componentService;
