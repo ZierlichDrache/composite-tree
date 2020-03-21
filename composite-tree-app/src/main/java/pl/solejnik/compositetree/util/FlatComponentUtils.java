@@ -6,7 +6,7 @@ import pl.solejnik.compositetree.to.ComponentTO;
 
 import java.util.*;
 
-public final class StreamUtil {
+public final class FlatComponentUtils {
 
     public static Set<Component> flatComponent(final Component component) {
         if (component.isLeaf()) {
@@ -32,7 +32,9 @@ public final class StreamUtil {
         } else {
             HashSet<ComponentTO> set = new HashSet<>();
             set.add(componentTO);
-            componentTO.getChildren().forEach(c -> set.addAll(flatComponentTO(c)));
+            if (componentTO.getChildren() != null) {
+                componentTO.getChildren().forEach(c -> set.addAll(flatComponentTO(c)));
+            }
             return set;
         }
     }

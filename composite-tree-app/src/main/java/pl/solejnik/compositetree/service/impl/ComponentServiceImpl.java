@@ -11,7 +11,7 @@ import pl.solejnik.compositetree.repository.ComponentRepository;
 import pl.solejnik.compositetree.service.ComponentService;
 import pl.solejnik.compositetree.to.ComponentTO;
 import pl.solejnik.compositetree.to.mapper.ComponentMapper;
-import pl.solejnik.compositetree.util.StreamUtil;
+import pl.solejnik.compositetree.util.FlatComponentUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,7 +86,7 @@ public class ComponentServiceImpl implements ComponentService {
             throw new CannotRemoveRootException();
         }
 
-        final Set<Long> componentsIds = StreamUtil
+        final Set<Long> componentsIds = FlatComponentUtils
                 .flatComponent(found)
                 .stream()
                 .map(Component::getId).collect(Collectors.toSet());
@@ -104,8 +104,8 @@ public class ComponentServiceImpl implements ComponentService {
                 .findById(newRootTO.getId())
                 .orElseThrow(() -> new ComponentNotFoundException(newRootTO.getId()));
 
-        final List<Component> components = StreamUtil.sortedFlatComponent(oldRoot);
-        final List<ComponentTO> tos = StreamUtil.sortedFlatComponentTO(newRootTO);
+        final List<Component> components = FlatComponentUtils.sortedFlatComponent(oldRoot);
+        final List<ComponentTO> tos = FlatComponentUtils.sortedFlatComponentTO(newRootTO);
 
         if (components.size() != tos.size()) {
             throw new IllegalArgumentException();
@@ -127,7 +127,7 @@ public class ComponentServiceImpl implements ComponentService {
 
     private void adjustLeafsValues(final Component component, final long delta) {
         if (delta != 0) {
-            final Set<Long> collect = StreamUtil
+            final Set<Long> collect = FlatComponentUtils
                     .flatComponent(component)
                     .stream()
                     .filter(Component::isLeaf)
