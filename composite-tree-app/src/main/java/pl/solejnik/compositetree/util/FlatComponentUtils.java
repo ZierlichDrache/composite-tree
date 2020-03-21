@@ -14,7 +14,10 @@ public final class FlatComponentUtils {
         } else {
             HashSet<Component> set = new HashSet<>();
             set.add(component);
-            ((Composite) component).getChildren().forEach(c -> set.addAll(flatComponent(c)));
+            Set<Component> children = ((Composite) component).getChildren();
+            if (children != null) {
+                children.forEach(c -> set.addAll(flatComponent(c)));
+            }
             return set;
         }
     }

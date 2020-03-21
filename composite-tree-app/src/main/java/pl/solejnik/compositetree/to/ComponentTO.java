@@ -28,10 +28,6 @@ public class ComponentTO implements Serializable {
         return value;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
     public Long getChildOrder() {
         return childOrder;
     }

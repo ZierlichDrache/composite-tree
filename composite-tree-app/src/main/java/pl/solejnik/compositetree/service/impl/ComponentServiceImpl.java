@@ -6,6 +6,7 @@ import pl.solejnik.compositetree.entity.Composite;
 import pl.solejnik.compositetree.entity.Leaf;
 import pl.solejnik.compositetree.exception.CannotRemoveRootException;
 import pl.solejnik.compositetree.exception.ComponentNotFoundException;
+import pl.solejnik.compositetree.exception.InconsistentRootException;
 import pl.solejnik.compositetree.repository.ComponentParentRepository;
 import pl.solejnik.compositetree.repository.ComponentRepository;
 import pl.solejnik.compositetree.service.ComponentService;
@@ -31,7 +32,7 @@ public class ComponentServiceImpl implements ComponentService {
 
     @Override
     public ComponentTO getRootComponent() {
-        Component component = componentRepository
+        final Component component = componentRepository
                 .findById(1L)
                 .orElseThrow(() -> new ComponentNotFoundException(1L));
         return ComponentMapper.map(component);
@@ -108,14 +109,14 @@ public class ComponentServiceImpl implements ComponentService {
         final List<ComponentTO> tos = FlatComponentUtils.sortedFlatComponentTO(newRootTO);
 
         if (components.size() != tos.size()) {
-            throw new IllegalArgumentException();
+            throw new InconsistentRootException();
         }
 
         for (int i = 0; i < components.size(); i++) {
             final Component component = components.get(i);
             final ComponentTO componentTO = tos.get(i);
             if (!component.getId().equals(componentTO.getId())) {
-                throw new IllegalArgumentException();
+                throw new InconsistentRootException();
             }
             component.setValue(componentTO.getValue());
         }
