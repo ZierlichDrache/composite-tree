@@ -1,8 +1,8 @@
 package pl.solejnik.compositetree.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -29,7 +29,7 @@ public abstract class Component {
     @JoinTable(name = "component_parent",
             joinColumns = @JoinColumn(name = "component_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "parent_id", referencedColumnName = "id"))
-    private List<Composite> parents = new ArrayList<>();
+    private Set<Composite> parents = new HashSet<>();
 
     public void addParent(final Composite parent) {
         this.parents.add(parent);
@@ -71,7 +71,7 @@ public abstract class Component {
         this.firstParent = firstParent;
     }
 
-    public List<Composite> getParents() {
+    public Set<Composite> getParents() {
         return parents;
     }
 

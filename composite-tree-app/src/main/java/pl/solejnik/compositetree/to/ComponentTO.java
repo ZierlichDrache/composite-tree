@@ -10,6 +10,8 @@ public class ComponentTO implements Serializable {
 
     private Long value;
 
+    private Long childOrder;
+
     private List<ComponentTO> children;
 
     private boolean isLeaf;
@@ -24,6 +26,18 @@ public class ComponentTO implements Serializable {
 
     public Long getValue() {
         return value;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Long getChildOrder() {
+        return childOrder;
+    }
+
+    public void setChildOrder(Long childOrder) {
+        this.childOrder = childOrder;
     }
 
     public void setValue(Long value) {

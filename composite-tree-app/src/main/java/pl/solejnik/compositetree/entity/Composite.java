@@ -1,15 +1,16 @@
 package pl.solejnik.compositetree.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @DiscriminatorValue("C")
 public class Composite extends Component {
 
     @ManyToMany(mappedBy = "parents", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    private List<Component> children = new ArrayList<>();
+    private Set<Component> children = new HashSet<>();
 
     public void addChild(final Component newChild) {
         getParents().forEach(newChild::addParent);
@@ -32,7 +33,7 @@ public class Composite extends Component {
         removeAllParents();
     }
 
-    public List<Component> getChildren() {
+    public Set<Component> getChildren() {
         return children;
     }
 

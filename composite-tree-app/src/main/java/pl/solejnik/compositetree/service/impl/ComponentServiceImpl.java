@@ -1,7 +1,6 @@
 package pl.solejnik.compositetree.service.impl;
 
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import pl.solejnik.compositetree.entity.Component;
 import pl.solejnik.compositetree.entity.Composite;
 import pl.solejnik.compositetree.entity.Leaf;
@@ -130,37 +129,32 @@ public class ComponentServiceImpl implements ComponentService {
     }
 
     private void updateParentWithoutOtherChildren(final Component component, final Set<Long> componentsIds) {
-        final Composite parentWithoutOtherChildren = findParentWithoutOtherChildren(component);
+        final boolean hasParentNoMoreChildren = hasFirstParentNoMoreChildren(component);
 
-        if (parentWithoutOtherChildren != null) {
+        if (hasParentNoMoreChildren) {
             Leaf newLeaf = new Leaf();
-            newLeaf.setValue(parentWithoutOtherChildren.getValue());
-            newLeaf.setChildOrder(parentWithoutOtherChildren.getChildOrder());
-            newLeaf.setFirstParent(parentWithoutOtherChildren.getFirstParent());
+            newLeaf.setValue(component.getFirstParent().getValue());
+            newLeaf.setChildOrder(component.getFirstParent().getChildOrder());
+            newLeaf.setFirstParent(component.getFirstParent().getFirstParent());
 
-            parentWithoutOtherChildren.getParents().forEach(newLeaf::addParent);
+            component.getFirstParent().getParents().forEach(newLeaf::addParent);
 
-            parentWithoutOtherChildren.removeRelations();
+            component.getFirstParent().removeRelations();
 
-            componentsIds.add(parentWithoutOtherChildren.getId());
+            componentsIds.add(component.getFirstParent().getId());
 
             componentRepository.save(newLeaf);
         }
     }
 
-    private Composite findParentWithoutOtherChildren(final Component component) {
-        for (final Composite parent : component.getParents()) {
-            if (!parent.isRoot()) {
-                long otherChildrenAmount = parent.getChildren()
-                        .stream()
-                        .filter(c -> !c.getId().equals(component.getId()))
-                        .count();
-                if (otherChildrenAmount == 0) {
-                    return parent;
-                }
-            }
-        }
-        return null;
+    private boolean hasFirstParentNoMoreChildren(final Component component) {
+
+        final Composite firstParent = component
+                .getFirstParent();
+        return !firstParent.isRoot() && firstParent
+                .getChildren()
+                .stream()
+                .anyMatch(c -> !c.getId().equals(component.getId()));
     }
 
     private void updateCompositeValue(final Composite composite, Long newValue) {
@@ -177,7 +171,7 @@ public class ComponentServiceImpl implements ComponentService {
         long remainingDelta = newValue - leaf.getValue();
 
         if (remainingDelta > 0) {
-            updateComponentValue(leaf.getParents().get(0).getId(), remainingDelta);
+            updateComponentValue(leaf.getFirstParent().getId(), remainingDelta);
         } else {
             final Map<Composite, Long> parentsToUpdate = new HashMap<>();
             for (Composite parent : leaf.getParents()) {

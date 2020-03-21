@@ -11,9 +11,11 @@ public final class StreamUtil {
         if (component.isLeaf()) {
             return Stream.of(component);
         } else {
-            return ((Composite) component).getChildren().stream()
-                    .map(StreamUtil::flatten)
-                    .reduce(Stream.of(component), Stream::concat);
+
+            return Stream.concat(
+                    Stream.of(component),
+                    ((Composite) component).getChildren().stream().flatMap(StreamUtil::flatten)
+            );
         }
     }
 }
