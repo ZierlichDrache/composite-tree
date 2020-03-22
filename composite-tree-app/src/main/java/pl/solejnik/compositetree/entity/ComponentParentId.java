@@ -5,7 +5,9 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
-
+/**
+ * Embeddable id for component parent entity
+ */
 @Embeddable
 public class ComponentParentId implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Entity for composite component
+ */
 @Entity
 @DiscriminatorValue("C")
 public class Composite extends Component {

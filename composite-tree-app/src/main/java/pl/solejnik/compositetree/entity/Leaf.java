@@ -3,6 +3,9 @@ package pl.solejnik.compositetree.entity;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+/**
+ * Entity for leaf component
+ */
 @Entity
 @DiscriminatorValue("L")
 public class Leaf extends Component {

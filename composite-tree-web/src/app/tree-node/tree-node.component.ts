@@ -2,6 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 
+/**
+ * Component for manipulating with the single tree node
+ */
 @Component({
   selector: 'app-tree-node',
   templateUrl: './tree-node.component.html',

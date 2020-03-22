@@ -8,6 +8,9 @@ import { ComponentNode } from '../shared/dtos';
 import { ComponentFlatNode } from '../shared/interfaces';
 import { TreeUtils } from './tree-util';
 
+/**
+ * Tree component with all nodes
+ */
 @Component({
   selector: 'app-tree',
   templateUrl: './tree.component.html',

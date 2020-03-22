@@ -4,6 +4,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * Map entity for component and its parents
+ */
 @Entity
 @Table(name = "component_parent")
 public class ComponentParent {

@@ -11,6 +11,9 @@ import pl.solejnik.compositetree.exception.CannotRemoveRootException;
 import pl.solejnik.compositetree.exception.ComponentNotFoundException;
 import pl.solejnik.compositetree.exception.InconsistentRootException;
 
+/**
+ * Global exception handler which map exceptions to the proper responses
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 

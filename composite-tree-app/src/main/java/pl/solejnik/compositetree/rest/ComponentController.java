@@ -8,11 +8,17 @@ import org.springframework.web.bind.annotation.*;
 import pl.solejnik.compositetree.service.ComponentService;
 import pl.solejnik.compositetree.to.ComponentTO;
 
+/**
+ * Rest endpoints for {@link ComponentTO} dtos
+ */
 @RestController
 @RequestMapping("/component")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ComponentController {
 
+    /**
+     * Logger
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(ComponentController.class);
 
     private ComponentService componentService;
@@ -21,6 +27,11 @@ public class ComponentController {
         this.componentService = componentService;
     }
 
+    /**
+     * Call for the root component
+     *
+     * @return the root component
+     */
     @GetMapping(value = "/root", produces = "application/json")
     public ResponseEntity<ComponentTO> getRootComponent() {
         LOGGER.info("Start calling rest for getting root component");
@@ -30,6 +41,12 @@ public class ComponentController {
         return new ResponseEntity<>(rootComponent, HttpStatus.OK);
     }
 
+    /**
+     * Call for create a new leaf to the given component id
+     *
+     * @param id id of given component
+     * @return updated component
+     */
     @PostMapping(value = "/{id}/create-leaf")
     public ResponseEntity<ComponentTO> createLeafForComponentWithId(@PathVariable final Long id) {
         LOGGER.info("Start calling rest for creating new leaf to the component with id: {}", id);
@@ -39,6 +56,13 @@ public class ComponentController {
         return new ResponseEntity<>(updatedComponent, HttpStatus.CREATED);
     }
 
+    /**
+     * Call for update the given component value
+     *
+     * @param id       id of component to be updated
+     * @param newValue new value
+     * @return status 202 wrapper
+     */
     @PutMapping("/{id}")
     public ResponseEntity<ComponentTO> updateComponentValue(@PathVariable final Long id,
                                                             @RequestParam final Long newValue) {
@@ -51,6 +75,12 @@ public class ComponentController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
+    /**
+     * Call for delete component with the given id
+     *
+     * @param id id of component to be deleted
+     * @return status 204 wrapper
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<ComponentTO> deleteComponent(@PathVariable final Long id) {
         LOGGER.info("Start calling rest for removing component with id: {}", id);
@@ -60,6 +90,12 @@ public class ComponentController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    /**
+     * Call for update the root component
+     *
+     * @param newTO transfer object with new state of the root component
+     * @return updated root component
+     */
     @PutMapping("/root")
     public ResponseEntity<ComponentTO> updateRootComponent(@RequestBody final ComponentTO newTO) {
         LOGGER.info("Start calling rest for update root component");

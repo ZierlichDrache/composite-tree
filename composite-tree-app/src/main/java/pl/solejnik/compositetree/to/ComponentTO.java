@@ -1,8 +1,13 @@
 package pl.solejnik.compositetree.to;
 
+import pl.solejnik.compositetree.entity.Component;
+
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Transfer object for entity map {@link Component}
+ */
 public class ComponentTO implements Serializable {
     private static final long serialVersionUID = 1L;
 

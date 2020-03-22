@@ -19,6 +19,9 @@ import pl.solejnik.compositetree.util.FlatComponentUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation service class of {@link ComponentService}
+ */
 @Service
 public class ComponentServiceImpl implements ComponentService {
 
@@ -148,6 +151,12 @@ public class ComponentServiceImpl implements ComponentService {
         return ComponentMapper.map(newRoot);
     }
 
+    /**
+     * Adjust leafs values after update its parent component
+     *
+     * @param component parent component
+     * @param delta     delta value of the leafs
+     */
     private void adjustLeafsValues(final Component component, final long delta) {
         if (delta != 0) {
             final Set<Long> collect = FlatComponentUtils
@@ -160,6 +169,12 @@ public class ComponentServiceImpl implements ComponentService {
         }
     }
 
+    /**
+     * Update given leaf
+     *
+     * @param found given leaf
+     * @return updated leaf
+     */
     private Composite updateLeaf(final Component found) {
         if (found.isLeaf()) {
             final Composite newComposite = new Composite();
@@ -179,6 +194,12 @@ public class ComponentServiceImpl implements ComponentService {
         }
     }
 
+    /**
+     * Update parent without children to change the composite to leaf because leaf has no leafs
+     *
+     * @param component     child of the given parent component
+     * @param componentsIds update id set to delete if the given component has parent without children
+     */
     private void updateParentWithoutOtherChildren(final Component component, final Set<Long> componentsIds) {
         final boolean hasParentNoMoreChildren = hasFirstParentNoMoreChildren(component);
 
@@ -198,6 +219,12 @@ public class ComponentServiceImpl implements ComponentService {
         }
     }
 
+    /**
+     * Check if the first parent of the component has no children
+     *
+     * @param component the given component
+     * @return if has no more children
+     */
     private boolean hasFirstParentNoMoreChildren(final Component component) {
 
         final Composite firstParent = component
@@ -208,6 +235,12 @@ public class ComponentServiceImpl implements ComponentService {
                 .anyMatch(c -> !c.getId().equals(component.getId()));
     }
 
+    /**
+     * Update the composite value
+     *
+     * @param composite given composite
+     * @param newValue  new value
+     */
     private void updateCompositeValue(final Composite composite, Long newValue) {
         final long delta = newValue - composite.getValue();
 
@@ -218,6 +251,12 @@ public class ComponentServiceImpl implements ComponentService {
         adjustLeafsValues(composite, delta);
     }
 
+    /**
+     * Update the leaf value
+     *
+     * @param leaf     given leaf
+     * @param newValue new value
+     */
     private void updateLeafValue(final Leaf leaf, final Long newValue) {
         long remainingDelta = newValue - leaf.getValue();
 

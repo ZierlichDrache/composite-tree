@@ -6,8 +6,17 @@ import pl.solejnik.compositetree.to.ComponentTO;
 
 import java.util.*;
 
+/**
+ * Util class for flat nested {@link Component} entities or {@link ComponentTO} transfer objects
+ */
 public final class FlatComponentUtils {
 
+    /**
+     * Flat {@link Component} entity wit its children to plain set of {@link Component}
+     *
+     * @param component given entity
+     * @return flatted set of {@link Component}
+     */
     public static Set<Component> flatComponent(final Component component) {
         if (component.isLeaf()) {
             return Collections.singleton(component);
@@ -26,6 +35,12 @@ public final class FlatComponentUtils {
         }
     }
 
+    /**
+     * Flat and sort {@link Component} entity wit its children to plain list of {@link Component}
+     *
+     * @param component given entity
+     * @return flatted and sorted list of {@link Component}
+     */
     public static List<Component> sortedFlatComponent(final Component component) {
         Set<Component> flatTos = flatComponent(component);
         List<Component> list = new ArrayList<>(flatTos);
@@ -33,6 +48,12 @@ public final class FlatComponentUtils {
         return list;
     }
 
+    /**
+     * Flat {@link ComponentTO} transfer objects with its children to plain set of {@link ComponentTO}
+     *
+     * @param componentTO given entity
+     * @return flatted set of {@link ComponentTO}
+     */
     public static Set<ComponentTO> flatComponentTO(final ComponentTO componentTO) {
         if (componentTO.isLeaf()) {
             return Collections.singleton(componentTO);
@@ -46,6 +67,12 @@ public final class FlatComponentUtils {
         }
     }
 
+    /**
+     * Flat and sort {@link ComponentTO} transfer objects with its children to plain list of {@link ComponentTO}
+     *
+     * @param componentTO given entity
+     * @return flatted and sorted list of {@link ComponentTO}
+     */
     public static List<ComponentTO> sortedFlatComponentTO(final ComponentTO componentTO) {
         Set<ComponentTO> flatTos = flatComponentTO(componentTO);
         List<ComponentTO> list = new ArrayList<>(flatTos);

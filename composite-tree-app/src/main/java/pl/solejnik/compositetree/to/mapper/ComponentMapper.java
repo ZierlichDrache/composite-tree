@@ -8,10 +8,20 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Map class which map {@link Component} to {@link ComponentTO}
+ */
 public final class ComponentMapper {
+
     private ComponentMapper() {
     }
 
+    /**
+     * Map {@link Component} to {@link ComponentTO}
+     *
+     * @param component component entity
+     * @return mapped component transfer object
+     */
     public static ComponentTO map(final Component component) {
         final ComponentTO to = new ComponentTO();
         to.setId(component.getId());

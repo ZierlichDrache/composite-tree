@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ComponentNode } from './dtos';
 
+/**
+ * Service to call backend for the components
+ */
 @Injectable({
   providedIn: 'root'
 })
