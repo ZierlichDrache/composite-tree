@@ -16,7 +16,11 @@ public final class FlatComponentUtils {
             set.add(component);
             Set<Component> children = ((Composite) component).getChildren();
             if (children != null) {
-                children.forEach(c -> set.addAll(flatComponent(c)));
+                children.forEach(c -> {
+                    if (c.getFirstParent().getId().equals(component.getId())) {
+                        set.addAll(flatComponent(c));
+                    }
+                });
             }
             return set;
         }
