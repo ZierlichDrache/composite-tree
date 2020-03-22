@@ -46,7 +46,7 @@ public class ComponentControllerIntegrationTest {
     }
 
     @Test
-    public void should_addingLeafToNotExistingComponent() {
+    public void should_addLeafToNotExistingComponent() {
 
         // when
         ResponseEntity<ComponentTO> response = restTemplate
@@ -62,11 +62,16 @@ public class ComponentControllerIntegrationTest {
     @Test
     public void should_updateComponentValueForExistingComponent() {
 
+        // given
+        final Long newValue = 5L;
+
         // when
-        restTemplate.put(LOCALHOST + port + "/component/1?newValue=5", ComponentTO.class);
+        restTemplate.put(LOCALHOST + port + "/component/1?newValue=" + newValue, ComponentTO.class);
+        ResponseEntity<ComponentTO> response = restTemplate
+                .getForEntity(LOCALHOST + port + "/component/root", ComponentTO.class);
 
         // then
-        // nothing
+        assertEquals(newValue, response.getBody().getValue());
     }
 
 
@@ -74,13 +79,34 @@ public class ComponentControllerIntegrationTest {
     public void should_deleteComponentForExistingComponentIsCalled() {
 
         // given
+        final int expectedChildrenAmount = 0;
         restTemplate
                 .postForEntity(LOCALHOST + port + "/component/1/create-leaf", null, ComponentTO.class);
+
         // when
         restTemplate.delete(LOCALHOST + port + "/component/2", ComponentTO.class);
+        ResponseEntity<ComponentTO> response = restTemplate
+                .getForEntity(LOCALHOST + port + "/component/root", ComponentTO.class);
 
         // then
-        // nothing
+        assertEquals(expectedChildrenAmount, response.getBody().getChildren().size());
     }
 
+    @Test
+    public void should_updateRootComponent() {
+
+        // given
+        final Long newValue = 2L;
+        final ComponentTO to = new ComponentTO();
+        to.setId(1L);
+        to.setValue(newValue);
+
+        // when
+        restTemplate.put(LOCALHOST + port + "/component/root", to, ComponentTO.class);
+        ResponseEntity<ComponentTO> response = restTemplate
+                .getForEntity(LOCALHOST + port + "/component/root", ComponentTO.class);
+
+        // then
+        assertEquals(newValue, response.getBody().getValue());
+    }
 }
