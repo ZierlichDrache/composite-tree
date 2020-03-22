@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.solejnik.compositetree.service.ComponentService;
+import pl.solejnik.compositetree.to.ComponentTO;
 
 @ExtendWith(MockitoExtension.class)
 public class ComponentControllerTest {
@@ -63,5 +64,15 @@ public class ComponentControllerTest {
 
         // then
         Mockito.verify(componentService, Mockito.times(1)).removeComponent(Mockito.anyLong());
+    }
+
+    @Test
+    public void should_callService_whenUpdateRootComponent() {
+
+        // when
+        componentController.updateRootComponent(new ComponentTO());
+
+        // then
+        Mockito.verify(componentService, Mockito.times(1)).updateRootComponent(Mockito.any());
     }
 }
