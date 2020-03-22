@@ -59,8 +59,8 @@ export class TreeNodeComponent implements OnInit {
   acceptEditWithNewValue() {
     if (this.treeNodeValue !== this.newValue.value) {
       this.treeNodeValue = this.newValue.value;
+      this.updateNodeValueEvent.emit(this.treeNodeValue);
     }
     this.edit = false;
-    this.updateNodeValueEvent.emit(this.treeNodeValue);
   }
 }

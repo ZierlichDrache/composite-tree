@@ -2,7 +2,6 @@ import { of } from 'rxjs';
 import { ComponentService } from '../shared/component.service';
 import { ComponentNode } from '../shared/dtos';
 import { TreeComponent } from './tree.component';
-import { fakeAsync, tick } from '@angular/core/testing';
 
 
 describe('TreeComponent unit', () => {
