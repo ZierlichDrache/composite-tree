@@ -1,5 +1,7 @@
 package pl.solejnik.compositetree.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.solejnik.compositetree.entity.Component;
 import pl.solejnik.compositetree.entity.Composite;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 @Service
 public class ComponentServiceImpl implements ComponentService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComponentServiceImpl.class);
+
     private ComponentRepository componentRepository;
 
     private ComponentParentRepository componentParentRepository;
@@ -32,14 +36,20 @@ public class ComponentServiceImpl implements ComponentService {
 
     @Override
     public ComponentTO getRootComponent() {
+        LOGGER.info("Start getting root component");
+
         final Component component = componentRepository
                 .findById(1L)
                 .orElseThrow(() -> new ComponentNotFoundException(1L));
+
+        LOGGER.info("End of getting root component");
         return ComponentMapper.map(component);
     }
 
     @Override
     public ComponentTO addNewLeafToComponent(final Long compositeId) {
+        LOGGER.info("Start adding new leaf to the component with the id: {}", compositeId);
+
         final Component found = componentRepository
                 .findById(compositeId)
                 .orElseThrow(() -> new ComponentNotFoundException(compositeId));
@@ -61,11 +71,15 @@ public class ComponentServiceImpl implements ComponentService {
 
         newLeaf.calculateValueFromParents();
         final Component savedComponent = componentRepository.save(source);
+
+        LOGGER.info("End of adding new leaf to the component with the id: {}", compositeId);
         return ComponentMapper.map(savedComponent);
     }
 
     @Override
     public void updateComponentValue(final Long componentId, final Long newValue) {
+        LOGGER.info("Start updating component value for the id: {} of the new value: {}", componentId, newValue);
+
         final Component found = componentRepository
                 .findById(componentId)
                 .orElseThrow(() -> new ComponentNotFoundException(componentId));
@@ -75,10 +89,13 @@ public class ComponentServiceImpl implements ComponentService {
         } else {
             updateCompositeValue((Composite) found, newValue);
         }
+
+        LOGGER.info("End of updating component value for the id: {} of the new value: {}", componentId, newValue);
     }
 
     @Override
     public void removeComponent(final Long componentId) {
+        LOGGER.info("Start remove component with the id: {}", componentId);
         final Component found = componentRepository
                 .findById(componentId)
                 .orElseThrow(() -> new ComponentNotFoundException(componentId));
@@ -97,10 +114,14 @@ public class ComponentServiceImpl implements ComponentService {
         componentParentRepository.deleteByComponentOrParentIds(componentsIds);
         componentRepository.removeFirstParentsByIds(componentsIds);
         componentRepository.deleteByIds(componentsIds);
+
+        LOGGER.info("End of remove component with the id: {}", componentId);
     }
 
     @Override
     public ComponentTO updateRootComponent(final ComponentTO newRootTO) {
+        LOGGER.info("Start updating root component");
+
         final Component oldRoot = componentRepository
                 .findById(newRootTO.getId())
                 .orElseThrow(() -> new ComponentNotFoundException(newRootTO.getId()));
@@ -122,9 +143,10 @@ public class ComponentServiceImpl implements ComponentService {
         }
 
         final Component newRoot = componentRepository.save(oldRoot);
+
+        LOGGER.info("End of updating root component");
         return ComponentMapper.map(newRoot);
     }
-
 
     private void adjustLeafsValues(final Component component, final long delta) {
         if (delta != 0) {
