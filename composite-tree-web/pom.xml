@@ -34,7 +34,7 @@
             </goals>
             <phase>generate-resources</phase>
             <configuration>
-              <arguments>ci --loglevel=info</arguments>
+              <arguments>ci --loglevel=error</arguments>
             </configuration>
           </execution>
           <execution>

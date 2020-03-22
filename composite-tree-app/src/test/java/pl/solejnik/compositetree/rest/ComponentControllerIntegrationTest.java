@@ -58,7 +58,6 @@ public class ComponentControllerIntegrationTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
-
     @Test
     public void should_updateComponentValueForExistingComponent() {
 
@@ -74,17 +73,17 @@ public class ComponentControllerIntegrationTest {
         assertEquals(newValue, response.getBody().getValue());
     }
 
-
     @Test
     public void should_deleteComponentForExistingComponentIsCalled() {
 
         // given
         final int expectedChildrenAmount = 0;
-        restTemplate
-                .postForEntity(LOCALHOST + port + "/component/1/create-leaf", null, ComponentTO.class);
+        final Long childId = restTemplate
+                .postForEntity(LOCALHOST + port + "/component/1/create-leaf", null, ComponentTO.class)
+                .getBody().getChildren().get(0).getId();
 
         // when
-        restTemplate.delete(LOCALHOST + port + "/component/2", ComponentTO.class);
+        restTemplate.delete(LOCALHOST + port + "/component/" + childId, ComponentTO.class);
         ResponseEntity<ComponentTO> response = restTemplate
                 .getForEntity(LOCALHOST + port + "/component/root", ComponentTO.class);
 
